@@ -1,12 +1,23 @@
 # CareerOps
 
+```
+ ██████╗ █████╗ ██████╗ ███████╗███████╗██████╗  ██████╗ ██████╗ ███████╗
+██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔════╝
+██║     ███████║██████╔╝█████╗  █████╗  ██████╔╝██║   ██║██████╔╝███████╗
+██║     ██╔══██║██╔══██╗██╔══╝  ██╔══╝  ██╔══██╗██║   ██║██╔═══╝ ╚════██║
+╚██████╗██║  ██║██║  ██║███████╗███████╗██║  ██║╚██████╔╝██║     ███████║
+ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚══════╝
+  Your career, recorded. Your resume, generated. Zero fabrication.
+                                                        — by Kalhar Pandya
+```
+
 **Your career, recorded. Your resume, generated. Zero fabrication.**
 
 [![npm version](https://img.shields.io/npm/v/careerops)](https://www.npmjs.com/package/careerops)
 [![license](https://img.shields.io/npm/l/careerops)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-blue)](https://claude.ai/code)
 
-CareerOps is a Claude Code plugin — a personal career knowledge base that turns your real history into tailored, ATS-ready resumes on demand, without fabricating a single word.
+CareerOps is a Claude Code plugin — a personal career knowledge base that turns your real history into tailored, ATS-ready resumes on demand, without fabricating a single word. **Capture achievements as they happen. Generate targeted resumes in minutes. Own your data forever.**
 
 **If this saves you time, [star the repo](https://github.com/KalharPandya/careerops) — it helps others find it.**
 

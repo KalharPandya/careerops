@@ -19,6 +19,17 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(__file__))
 from _paths import career_dir, data_root
 
+BANNER = (
+    " ██████╗ █████╗ ██████╗ ███████╗███████╗██████╗  ██████╗ ██████╗ ███████╗\n"
+    "██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔════╝\n"
+    "██║     ███████║██████╔╝█████╗  █████╗  ██████╔╝██║   ██║██████╔╝███████╗\n"
+    "██║     ██╔══██║██╔══██╗██╔══╝  ██╔══╝  ██╔══██╗██║   ██║██╔═══╝ ╚════██║\n"
+    "╚██████╗██║  ██║██║  ██║███████╗███████╗██║  ██║╚██████╔╝██║     ███████║\n"
+    " ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚══════╝\n"
+    "  Your career, recorded. Your resume, generated. Zero fabrication.\n"
+    "                                                        — by Kalhar Pandya"
+)
+
 
 def plugin_root() -> Path:
     env = os.environ.get("CLAUDE_PLUGIN_ROOT")
@@ -159,10 +170,11 @@ def main():
     career = career_dir()
     additional_context = build_additional_context(career)
     output = {
+        "systemMessage": BANNER,
         "hookSpecificOutput": {
             "hookEventName": "SessionStart",
             "additionalContext": additional_context,
-        }
+        },
     }
     sys.stdout.buffer.write(json.dumps(output, ensure_ascii=False).encode("utf-8"))
     sys.stdout.buffer.write(b"\n")
