@@ -1,0 +1,28 @@
+# RenderCV theme + design preferences.
+# Written by /career-init on first plugin setup; re-run /career-init to change.
+# Bullet-composer reads this and emits it as the top-level `design:` block
+# inside the generated rendercv-input.yaml for every application.
+
+theme: engineeringresumes
+
+# Required: disable soft hyphenation. Otherwise long words wrap as
+# "engineer-\ning" and ATS keyword search for "engineering" misses them
+# (pypdf and pdfminer do NOT dehyphenate on extraction).
+design:
+  typography:
+    alignment: justified-with-no-hyphenation
+  page:
+    show_top_note: false
+
+# Additional optional overrides — uncomment to customize:
+#   font_size: 10pt
+#   page:
+#     size: us-letter        # or a4
+#     top_margin: 1.5cm
+#     bottom_margin: 1.5cm
+#     left_margin: 1.5cm
+#     right_margin: 1.5cm
+#   colors:
+#     text: rgb(0,0,0)
+#     name: rgb(0,0,0)
+#     section_titles: rgb(0,0,0)

@@ -1,0 +1,28 @@
+degrees:
+  - id: EDU-<institution-short>-<degree-short>-<field-short>
+    institution: <Institution Full Name>
+    area: <Field of Study (Concentration if any)>
+    degree: <MS|BS|BE|PhD|BA|etc>
+    location: <City, Region>
+    start_date: "<YYYY-MM>"
+    end_date: "<YYYY-MM>"
+    gpa: "<X.XX>"
+    highlights:
+      - "GPA: <X.XX> / 4.0"
+      - "Coursework: <Course 1>, <Course 2>, <Course 3>"
+      - "<Any other notable highlight, e.g. TA role or award>"
+    notable_courses:
+      - <Course 1>
+      - <Course 2>
+      - <Course 3>
+
+  - id: EDU-<institution-short>-<degree-short>-<field-short>
+    institution: <Second Institution Full Name>
+    area: <Field of Study>
+    degree: <BS|BE|BA|etc>
+    location: <City, Region>
+    start_date: "<YYYY-MM>"
+    end_date: "<YYYY-MM>"
+    gpa: "<X.XX>"
+    highlights:
+      - "GPA: <X.XX> / 4.0"

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience.schema.json",
+  "title": "CareerOps Experience Envelope",
+  "description": "A role/job that groups related facts. In v2, facts are embedded directly in the facts[] array. The legacy fact_refs[] array is kept for backward compatibility during migration.",
+  "type": "object",
+  "required": ["id", "employer", "role_title", "when_start", "when_end"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^X-" },
+    "employer": { "type": "string", "description": "IMMUTABLE" },
+    "role_title": { "type": "string", "description": "IMMUTABLE" },
+    "location": { "type": "string" },
+    "when_start": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$", "description": "YYYY-MM -- IMMUTABLE" },
+    "when_end": {
+      "oneOf": [
+        { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
+        { "type": "string", "enum": ["present"] }
+      ],
+      "description": "YYYY-MM or 'present' -- IMMUTABLE"
+    },
+    "team": { "type": "string" },
+    "fact_refs": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^F-" },
+      "description": "DEPRECATED (v1). References to standalone F-*.yaml files. Kept for backward compatibility. Migrate to facts[] embedded array."
+    },
+    "facts": {
+      "type": "array",
+      "description": "v2: Embedded fact objects. Replaces the standalone career/facts/ F-*.yaml files.",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "title", "when", "impact"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^F-", "description": "Globally unique fact ID" },
+          "type": { "type": "string", "enum": ["achievement", "responsibility", "skill_use"] },
+          "title": { "type": "string", "minLength": 5 },
+          "when": { "type": "string", "pattern": "^[0-9]{4}(-[0-9]{2})?$", "description": "YYYY or YYYY-MM -- IMMUTABLE" },
+          "impact": {
+            "type": "object",
+            "required": ["metric", "quantified", "outcome"],
+            "additionalProperties": false,
+            "properties": {
+              "metric": { "type": "string" },
+              "quantified": { "type": "boolean" },
+              "outcome": { "type": "string" }
+            }
+          },
+          "tech_actual": { "type": "array", "items": { "type": "string" } },
+          "metrics": { "type": "array", "items": { "type": "string" } },
+          "framings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "angle", "sample"],
+              "additionalProperties": false,
+              "properties": {
+                "id": { "type": "string" },
+                "angle": { "type": "string" },
+                "sample": { "type": "string" }
+              }
+            }
+          },
+          "evidence": { "type": "array", "items": { "type": "string", "pattern": "^E-" } },
+          "description": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["verified", "pending-evidence", "retired"], "default": "pending-evidence" }
+        }
+      }
+    },
+    "display_order": { "type": "integer", "description": "Lower = shown earlier on resume" }
+  }
+}

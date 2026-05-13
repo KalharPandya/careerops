@@ -1,0 +1,104 @@
+# CareerOps — Resume Rules Engine Config
+# Enforced by scripts/validate_resume.py and scripts/lint_yaml.py
+
+em_dash_policy:
+  forbidden_codepoints:
+    - "U+2014"   # EM DASH —
+    - "U+2015"   # HORIZONTAL BAR ―
+    - "U+2E3A"   # TWO-EM DASH ⸺
+    - "U+2E3B"   # THREE-EM DASH ⸻
+  allowed_in_date_ranges: "U+2013"  # EN DASH –
+  enforcement:
+    career_applications: strict    # exit non-zero
+    career_facts: warn             # exit 0, print warning
+    career_projects: warn
+    career_jd_analysis: skip       # preserve JD verbatim
+    docs: skip
+    raw_data: skip
+
+page_budgets:
+  default: 2
+  max: 2
+  min: 1
+
+banned_phrases:
+  # AI-signature words — fail if present in resume output (unless in JD verbatim keyword list)
+  tier1_always_fail:
+    - "leverage"
+    - "leveraging"
+    - "leveraged"
+    - "robust"
+    - "comprehensive"
+    - "seamless"
+    - "delve"
+    - "delving"
+    - "landscape"
+    - "paradigm"
+    - "synergy"
+    - "synergize"
+    - "holistic"
+    - "cutting-edge"
+    - "state-of-the-art"
+    - "next-generation"
+    - "game-changing"
+    - "revolutionize"
+    - "transformative"
+    - "spearheaded"
+    - "spearheading"
+    - "pioneered"
+    - "pioneering"
+    - "harnessed"
+    - "harnessing"
+    - "fostered"
+    - "fostering"
+    - "facilitated"
+    - "facilitating"
+    - "ensured"
+    - "ensuring"
+    - "streamlined"
+    - "streamlining"
+    - "optimized the"
+    - "optimizing the"
+    - "in the realm of"
+    - "in today's fast-paced"
+    - "fast-paced environment"
+    - "ever-evolving"
+    - "ever-changing"
+    - "multifaceted"
+    - "nuanced"
+    - "crucial"
+    - "vital"
+    - "paramount"
+    - "groundbreaking"
+    - "innovative solutions"
+    - "best practices"
+    - "successfully"
+    - "successfully implemented"
+    - "successfully developed"
+
+  tier2_warn_if_not_in_jd:
+    # These are acceptable if they appear in the JD verbatim keyword list
+    - "scalable"
+    - "efficient"
+    - "real-time"
+    - "end-to-end"
+    - "cross-functional"
+    - "stakeholders"
+
+bullet_structure:
+  require_action_verb: true
+  max_length_chars: 200
+  min_length_chars: 40
+  require_metric_or_outcome: true
+
+decorum_floors:
+  current_role_min_bullets: 2
+  never_drop_current_role: true
+  merge_requires_shared_theme: true
+  compression_must_keep_employer: true
+  compression_must_keep_dates: true
+  last_page_min_ratio: 0.6    # Gate 9: last page must be >= 60% as full as page 1
+
+retry_policy:
+  max_composer_retries: 3
+  on_max_retries: surface_to_user

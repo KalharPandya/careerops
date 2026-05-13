@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "embedded-fact.schema.json",
+  "title": "CareerOps Embedded Fact",
+  "description": "An atomic career fact embedded inside its parent experience envelope. Employer, role_ref, and role_title are inherited from the parent X-*.yaml and must not be repeated here.",
+  "type": "object",
+  "required": ["id", "type", "title", "when", "impact"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^F-",
+      "description": "Unique fact identifier, e.g. F-2025-oracle-rag-pipeline. Must be globally unique across all experience files."
+    },
+    "type": {
+      "type": "string",
+      "enum": ["achievement", "responsibility", "skill_use"]
+    },
+    "title": { "type": "string", "minLength": 5 },
+    "when": {
+      "type": "string",
+      "pattern": "^[0-9]{4}(-[0-9]{2})?$",
+      "description": "YYYY or YYYY-MM -- IMMUTABLE"
+    },
+    "impact": {
+      "type": "object",
+      "required": ["metric", "quantified", "outcome"],
+      "additionalProperties": false,
+      "properties": {
+        "metric": { "type": "string" },
+        "quantified": { "type": "boolean" },
+        "outcome": { "type": "string" }
+      }
+    },
+    "tech_actual": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Technologies actually used -- verbatim, no embellishment"
+    },
+    "metrics": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Concrete, measurable claims"
+    },
+    "framings": {
+      "type": "array",
+      "description": "Pre-authored angles for composing bullets",
+      "items": {
+        "type": "object",
+        "required": ["id", "angle", "sample"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "angle": { "type": "string" },
+          "sample": { "type": "string" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^E-" },
+      "description": "Evidence IDs that back this fact"
+    },
+    "description": { "type": "string" },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["verified", "pending-evidence", "retired"],
+      "default": "pending-evidence"
+    }
+  }
+}

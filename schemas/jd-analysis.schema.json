@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "jd-analysis.schema.json",
+  "title": "CareerOps JD Analysis",
+  "description": "Structured analysis of a job description produced by jd-analyzer subagent",
+  "type": "object",
+  "required": ["id", "ingested_at", "source_file", "company", "role", "keywords_verbatim"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^JD-" },
+    "ingested_at": { "type": "string", "format": "date-time" },
+    "source_file": { "type": "string" },
+    "company": { "type": "string" },
+    "role": { "type": "string" },
+    "seniority": { "type": "string", "enum": ["junior", "mid", "senior", "staff", "principal", "unknown"] },
+    "required_skills": { "type": "array", "items": { "type": "string" } },
+    "preferred_skills": { "type": "array", "items": { "type": "string" } },
+    "keywords_verbatim": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Exact strings lifted from JD text -- used in Gate 3 keyword check"
+    },
+    "red_flags": { "type": "array", "items": { "type": "string" } },
+    "match_score_hint": { "type": "number", "minimum": 0, "maximum": 1 },
+    "target_facts": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^F-" },
+      "description": "v1: Fact IDs the jd-analyzer recommends featuring. Superseded by ranked_facts[] in v2 but kept for backward compatibility."
+    },
+    "ranked_facts": {
+      "type": "array",
+      "description": "v2: All known facts scored by relevance to this JD. Higher score = more relevant. Advisory only -- bullet-composer reads all facts regardless. Sorted descending by score.",
+      "items": {
+        "type": "object",
+        "required": ["fact_id", "score", "matched_keywords"],
+        "additionalProperties": false,
+        "properties": {
+          "fact_id": { "type": "string", "pattern": "^F-", "description": "Fact ID -- references a fact embedded in career/experiences/X-*.yaml" },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Relevance score: 1.0 = 3+ required keyword matches with strong metric; 0.8-0.99 = 2+ required; 0.6-0.79 = 1 required or 2+ preferred; <0.6 = low relevance"
+          },
+          "matched_keywords": { "type": "array", "items": { "type": "string" }, "description": "Verbatim JD keywords that matched this fact" }
+        }
+      }
+    },
+    "role_type": { "type": "string", "enum": ["software-engineer", "ml-engineer", "ai-engineer", "devops", "data-engineer", "other"] },
+    "notes": { "type": "string" }
+  }
+}

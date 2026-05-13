@@ -1,0 +1,10 @@
+{
+  "name": "careerops",
+  "description": "Schema-driven, fact-traceable resume and cover-letter automation",
+  "version": "2.0.0",
+  "author": {
+    "name": "Kalhar Pandya"
+  },
+  "homepage": "https://github.com/KalharPandya/careerops",
+  "license": "MIT"
+}

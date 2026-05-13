@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "project.schema.json",
+  "title": "CareerOps Project",
+  "description": "A side project or notable open-source contribution",
+  "type": "object",
+  "required": ["id", "name", "when_start", "fact_refs"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^P-"
+    },
+    "name": { "type": "string" },
+    "url": { "type": "string" },
+    "when_start": {
+      "type": "string",
+      "pattern": "^[0-9]{4}(-[0-9]{2})?$"
+    },
+    "when_end": {
+      "oneOf": [
+        { "type": "string", "pattern": "^[0-9]{4}(-[0-9]{2})?$" },
+        { "type": "string", "enum": ["present"] }
+      ]
+    },
+    "tech": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "description": { "type": "string" },
+    "fact_refs": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^F-" }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "user-overrides.schema.json",
+  "title": "CareerOps User Overrides",
+  "description": "Per-application explicit opt-ins for Tier 2 framing and presentation. Subagents never write this file.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "show_location": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show location in resume header. Default false (privacy-safe)."
+    },
+    "show_phone": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show phone number in resume header. Default false."
+    },
+    "position_emphasis": {
+      "type": "string",
+      "enum": ["agentic-ai", "forward-deployed", "fullstack", "ml-engineer", "cloud-infra", "research"],
+      "description": "Drives professional summary tone and bullet-budget priority."
+    },
+    "banned_tech": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tech terms that must NOT appear in this resume. Per-application honesty constraint."
+    },
+    "cover_letter_brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "User-supplied positioning context for the cover letter composer.",
+      "properties": {
+        "why_company": { "type": "string" },
+        "gaps_to_address": { "type": "string" },
+        "personal_notes": { "type": "string" }
+      }
+    },
+    "encapsulation_overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role_ref", "decision"],
+        "additionalProperties": false,
+        "properties": {
+          "role_ref": { "type": "string", "pattern": "^X-" },
+          "decision": { "type": "string", "enum": ["expand", "compress", "one-line", "drop"] },
+          "bullet_count": { "type": "integer", "minimum": 1 },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "include_projects": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^P-" }
+    },
+    "include_facts_as_projects": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^F-" }
+    },
+    "allow_cross_role_skills": {
+      "type": "array",
+      "description": "Allow adding tech terms to a role that weren't in that role's facts",
+      "items": {
+        "type": "object",
+        "required": ["in_role_ref", "add_terms", "justification"],
+        "additionalProperties": false,
+        "properties": {
+          "in_role_ref": { "type": "string", "pattern": "^X-" },
+          "add_terms": { "type": "array", "items": { "type": "string" } },
+          "justification": { "type": "string" }
+        }
+      }
+    },
+    "tone_overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["target_fact", "tone"],
+        "additionalProperties": false,
+        "properties": {
+          "target_fact": { "type": "string", "pattern": "^F-" },
+          "tone": {
+            "type": "string",
+            "enum": ["neutral", "confident", "aggressive", "understated"]
+          }
+        }
+      }
+    },
+    "framing_overrides": {
+      "type": "array",
+      "description": "Force a specific pre-authored framing for a fact",
+      "items": {
+        "type": "object",
+        "required": ["fact_ref", "framing_id"],
+        "additionalProperties": false,
+        "properties": {
+          "fact_ref": { "type": "string", "pattern": "^F-" },
+          "framing_id": { "type": "string" }
+        }
+      }
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "page_budget": { "type": "integer", "enum": [1, 2] },
+        "theme_override": { "type": "string" },
+        "expand_fully": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^X-" }
+        },
+        "compress": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role_ref", "style"],
+            "additionalProperties": false,
+            "properties": {
+              "role_ref": { "type": "string", "pattern": "^X-" },
+              "style": {
+                "type": "string",
+                "enum": ["one-bullet", "two-bullets", "one-line"]
+              }
+            }
+          }
+        },
+        "merge": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["merged_label", "role_refs", "style"],
+            "additionalProperties": false,
+            "properties": {
+              "merged_label": { "type": "string" },
+              "role_refs": {
+                "type": "array",
+                "items": { "type": "string", "pattern": "^X-" },
+                "minItems": 2
+              },
+              "style": {
+                "type": "string",
+                "enum": ["paragraph", "comma-list", "bullets"]
+              }
+            }
+          }
+        },
+        "drop": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^X-" }
+        }
+      }
+    }
+  }
+}

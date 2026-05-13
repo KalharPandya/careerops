@@ -1,0 +1,31 @@
+categories:
+  - label: <Category Label, e.g. Languages>
+    skills:
+      - <Skill 1>
+      - <Skill 2>
+      - <Skill 3>
+
+  - label: <Category Label, e.g. AI / ML>
+    skills:
+      - <Framework or Tool 1>
+      - <Framework or Tool 2>
+      - <Framework or Tool 3>
+
+  - label: <Category Label, e.g. Cloud & Infrastructure>
+    skills:
+      - <Cloud Provider or Service 1>
+      - <Cloud Provider or Service 2>
+      - <Tool 3>
+
+  - label: <Category Label, e.g. Web & Backend>
+    skills:
+      - <Framework 1>
+      - <Framework 2>
+      - <Database>
+
+  - label: <Category Label, e.g. Tools & Practices>
+    skills:
+      - Git
+      - <Testing framework>
+      - <Methodology, e.g. TDD>
+      - <Other tool or practice>

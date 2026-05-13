@@ -1,0 +1,34 @@
+# <Your Name> — Career Project
+
+## Profile
+- **Name:** <Your Full Name>
+- **Resume email:** <your-email@example.com>
+- **Phone:** <+1-555-555-5555>
+- **Location:** <City, Region>
+- **Website:** <https://your-website.com>
+- **LinkedIn:** <https://linkedin.com/in/your-handle>
+- **GitHub:** <https://github.com/your-handle>
+- **Target roles:** <Role 1, Role 2, Role 3>
+- **Current role:** <Title at Company (Start Date to present)>
+
+## Education
+- <Institution> -- <Degree>, <Field>, GPA <X.XX>/4.0, <Start>--<End>
+
+## Key Experience (in reverse chronological order)
+- <Company> -- <Title> (<Start>--<End>), <Location>
+
+## Highlights
+- <Your top career achievement with metric>
+- <Another highlight>
+
+## Writing Preferences
+- Title: <preferred job title framing>
+- Tone: <e.g., direct, metrics-driven>
+- Voice: <e.g., active, confident>
+
+## Project Context
+- Plugin installed from: P:\CareerOps
+- Run Claude from this directory with: `claude --plugin-dir P:\CareerOps`
+- Career knowledge base: career/ (facts, experiences, projects, applications)
+- JD inbox: inbox/
+- Source resumes: raw_data/

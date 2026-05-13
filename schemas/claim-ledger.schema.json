@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "claim-ledger.schema.json",
+  "title": "CareerOps Claim Ledger",
+  "description": "Maps every resume bullet to its backing fact(s), with full provenance metadata",
+  "type": "object",
+  "required": ["generated_at", "jd_ref", "target_pages", "bullets"],
+  "additionalProperties": false,
+  "properties": {
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "jd_ref": {
+      "type": "string",
+      "pattern": "^JD-"
+    },
+    "target_pages": { "type": "integer", "enum": [1, 2] },
+    "bullets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["bullet_id", "section", "text", "backed_by"],
+        "additionalProperties": false,
+        "properties": {
+          "bullet_id": { "type": "string", "pattern": "^B-" },
+          "section": { "type": "string" },
+          "text": { "type": "string" },
+          "backed_by": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^F-" },
+            "minItems": 1
+          },
+          "framing_used": { "type": "string" },
+          "framing_override": { "type": "boolean", "default": false },
+          "override_source": { "type": "string" },
+          "override_terms_added": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "verified_against": { "type": "string" },
+          "keywords_hit": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "unmatched_keywords": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "JD keywords with no supporting fact"
+    },
+    "presentation_plan_ref": { "type": "string" }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "application.schema.json",
+  "title": "CareerOps Application Registry Entry",
+  "description": "One job application — links JD, generated resume, and outcome",
+  "type": "object",
+  "required": ["id", "company", "role", "jd_ref", "generated_at", "ready_to_send"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^A-"
+    },
+    "company": { "type": "string" },
+    "role": { "type": "string" },
+    "jd_ref": {
+      "type": "string",
+      "pattern": "^JD-"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ready_to_send": {
+      "type": "boolean",
+      "default": false,
+      "description": "Set to true only by validator after all gates and auditor pass"
+    },
+    "sent_at": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "null" }
+      ]
+    },
+    "outcome": {
+      "type": "object",
+      "required": ["state"],
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": ["pending", "no_response", "interview", "offer", "reject"]
+        },
+        "at": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "validation_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gates_passed": { "type": "boolean" },
+        "auditor_verdict": {
+          "type": "string",
+          "enum": ["PASS", "NEEDS-REVIEW", "FAIL", "pending"]
+        },
+        "retry_count": { "type": "integer", "default": 0 }
+      }
+    }
+  }
+}

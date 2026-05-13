@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    {
+      "name": "careerops",
+      "description": "Schema-driven, fact-traceable resume and cover-letter automation",
+      "path": "."
+    }
+  ]
+}
