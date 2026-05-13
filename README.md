@@ -1,22 +1,42 @@
 # CareerOps
 
-**The resume engine that never makes things up.**
+**Your career, recorded. Your resume, generated. Zero fabrication.**
 
 [![npm version](https://img.shields.io/npm/v/careerops)](https://www.npmjs.com/package/careerops)
 [![license](https://img.shields.io/npm/l/careerops)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-blue)](https://claude.ai/code)
 
-CareerOps is a Claude Code plugin that turns your real career history into tailored, ATS-ready resumes — automatically, repeatably, and without fabricating a single word.
+CareerOps is a Claude Code plugin — a personal career knowledge base that turns your real history into tailored, ATS-ready resumes on demand, without fabricating a single word.
 
-**If you find it useful, [star the repo](https://github.com/KalharPandya/careerops) — it helps others find it.**
+**If this saves you time, [star the repo](https://github.com/KalharPandya/careerops) — it helps others find it.**
+
+---
+
+## Sound Familiar?
+
+> *"I just got promoted. How do I capture this properly so I remember it in two years?"*
+
+> *"I shipped something big last quarter. I know it was impressive — I just can't remember the exact numbers anymore."*
+
+> *"I won an award. Got a great performance review. Finished a project I'm proud of. Where do I put all of this?"*
+
+> *"I'm applying to ten jobs. My resume says the same thing for all of them. I know some of this experience is more relevant than others — I just don't know how to show that."*
+
+> *"It's been three years. I open a blank doc. I stare at it. I genuinely cannot remember everything I've done."*
+
+This is the problem CareerOps solves. Not just resume generation — **career memory**.
+
+Most people have no system for recording what they do. Achievements get forgotten. Promotions don't make it into resumes with the right framing. Side projects disappear into GitHub. When a great opportunity appears, you're scrambling to reconstruct years of work from memory, Slack messages, and old PRs.
+
+CareerOps is the system you never had. **Capture once. Apply everywhere.**
 
 ---
 
 ## The Problem with AI Resumes
 
-Every AI resume tool has the same flaw: it invents. It dresses up your experience with metrics you never hit, skills you never used, and bullet points that sound great but aren't true. That works until the interview — then it fails badly.
+The other problem: every AI resume tool invents things. It dresses up your experience with metrics you never hit, skills you never used, and bullet points that sound impressive but aren't true. That works until the interview — then it fails badly.
 
-CareerOps takes a different approach. It treats your resume as an **output of a database**, not a document written from scratch each time.
+CareerOps treats your resume as an **output of your fact database**, not a document generated from scratch. If you didn't capture it, it doesn't appear. Every bullet on every resume traces to something you actually did.
 
 ---
 
@@ -51,11 +71,23 @@ CareerOps proposes which roles to expand, compress, or drop based on relevance. 
 
 ## Use Cases
 
-- **Active job search** — apply to 10 roles with 10 tailored resumes, each grounded in real facts
-- **Career journaling** — capture achievements as they happen, never scramble to remember them later
-- **Senior engineers** — too much experience to fit one page; CareerOps scores and ranks what matters for each role
-- **Career changers** — surface transferable skills from your history that align with the target JD
-- **Anyone who hates writing about themselves** — describe what you built; CareerOps handles the framing
+**You just shipped something big.**
+Run `/careerops:capturing-fact`. CareerOps interviews you — what did you build, what was the impact, what's the metric. Stored, structured, permanently recorded. You'll have it word-for-word when you need it two years from now.
+
+**You got promoted or won an award.**
+Same flow. Capture it now, while you remember the details. Your fact database grows with your career.
+
+**You're in a job search.**
+Drop in a job description. CareerOps scores every fact in your database against it, surfaces the most relevant experience, proposes a presentation plan, and generates a tailored resume grounded entirely in your real history.
+
+**You're applying to 10 different roles.**
+Not 10 different resumes written by hand. One database, 10 different fact weightings. Each resume is specific to its JD.
+
+**You have too much experience for one page.**
+CareerOps knows what you've done. It decides what to expand, compress, or drop based on what the role actually asks for — and asks for your sign-off before writing a word.
+
+**You haven't updated your resume in three years.**
+Import your old resume and seed your database from it. Then start capturing forward. You'll never start from a blank page again.
 
 ---
 
