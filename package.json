@@ -1,6 +1,6 @@
 {
   "name": "careerops",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Schema-driven, fact-traceable resume and cover-letter automation for Claude Code",
   "keywords": [
     "claude-code",
