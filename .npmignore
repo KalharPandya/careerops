@@ -1,0 +1,8 @@
+# Development and personal data — never publish these
+docs/
+.git/
+.gitignore
+**/__pycache__/
+*.pyc
+skills-lock.json
+.npm-token

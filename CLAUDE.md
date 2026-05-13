@@ -1,6 +1,6 @@
 # CareerOps Plugin — Development Workspace
 
-This directory is the **plugin development workspace** for CareerOps, a Claude Code plugin that automates schema-driven, fact-traceable resume and cover-letter generation. Everything here is part of the **plugin** itself. Zero user data lives here.
+This directory is the **plugin source** for CareerOps, a Claude Code plugin that automates schema-driven, fact-traceable resume and cover-letter generation. Everything here is part of the **plugin** itself. Zero user data lives here.
 
 If you are a new Claude session opening this directory: read this file end to end before touching anything.
 
@@ -19,7 +19,7 @@ If you are a new Claude session opening this directory: read this file end to en
 ## Architecture: Plugin vs User Directory
 
 ```
-P:\CareerOps\                       ← THIS DIRECTORY (plugin only)
+careerops/                          ← THIS DIRECTORY (plugin only)
 ├── .claude-plugin/plugin.json
 ├── skills/                         How Claude does each operation
 ├── agents/                         Specialized subagents
@@ -32,40 +32,21 @@ P:\CareerOps\                       ← THIS DIRECTORY (plugin only)
 ├── CLAUDE.md                       This file
 └── README.md                       Plugin documentation
 
-P:\Resumes\Claude-automations\      ← USER DATA (Kalhar's personal directory)
+~/my-career/                        ← USER DATA (user's own directory)
 ├── CLAUDE.md                       User's profile, writing preferences
 ├── career/                         Facts, experiences, projects, applications
 ├── inbox/                          Raw JDs waiting to be analyzed
-├── raw_data/                       Source resumes for seeding
-└── Master_Career_Document.md       User's canonical career doc
+└── raw_data/                       Source resumes for seeding
 ```
 
 **Rule of thumb:**
 - If it tells the system **how** to do something → plugin (here)
-- If it is **personal information** or **user-supplied data** → user directory (other)
+- If it is **personal information** or **user-supplied data** → user directory
 - If it is **user-specific configuration** (theme choice, rule override, profile) → user directory
 
-A fresh user installs this plugin via `claude --plugin-dir P:\CareerOps` from their own data directory, then runs `/careerops:setting-up` to populate it from `templates/`.
+A new user installs this plugin via `npx careerops install`, then runs `/careerops:setting-up` from their own data directory to populate it from `templates/`.
 
 The `using-careerops` skill is injected at every SessionStart via hook and serves as the bootstrap skill, orienting Claude to the plugin structure and user data directory at the start of each session.
-
----
-
-## Current State (2026-05-13)
-
-**Phase:** Pre-migration. The plugin is being lifted out of `P:\Resumes\Claude-automations\` (the legacy location where plugin code and user data were mixed together).
-
-**What lives here right now:** Only documentation. The actual skills, agents, scripts, schemas, and hooks are still in the legacy location and will be migrated per the plan.
-
-**Active plan:** `docs/superpowers/plans/2026-05-13-careerops-plugin-restructure.md` (11 tasks, ordered for safe migration with rollback at every step)
-
-**Done:**
-- Created this directory and docs scaffold
-- Wrote the restructure plan
-- Investigated and catalogued every user-specific contamination in the legacy plugin code (6 skill files, 2 agent files, 4 Python scripts hardcoded paths, `render_cover_letter.py` had a Kalhar Pandya fallback)
-- Confirmed memory directory stays valid (user directory path is unchanged)
-
-**Next:** Execute the restructure plan, task by task. See "Execution" section below.
 
 ---
 
@@ -75,12 +56,12 @@ The `using-careerops` skill is injected at every SessionStart via hook and serve
 
 | Entity | Pattern | Example |
 |---|---|---|
-| Fact | `F-YYYY-<employer-slug>-<3-word-desc>` | `F-2025-deloitte-1st-50agents` |
-| Experience envelope | `X-<employer-slug>-<role-slug>` | `X-oracle-research-coop` |
+| Fact | `F-YYYY-<employer-slug>-<3-word-desc>` | `F-2025-acme-1st-50agents` |
+| Experience envelope | `X-<employer-slug>-<role-slug>` | `X-acme-senior-dev` |
 | Project | `P-<project-slug>` | `P-careerops` |
-| Evidence | `E-<fact-id>-<source-slug>` | `E-F-2025-deloitte-1st-cert` |
-| Application | `A-YYYY-MM-DD-<company>-<role>` | `A-2026-05-12-procogia-ai-intern` |
-| JD analysis | `JD-YYYY-MM-DD-<company>-<role>` | `JD-2026-05-12-procogia-ai-intern` |
+| Evidence | `E-<fact-id>-<source-slug>` | `E-F-2025-acme-1st-cert` |
+| Application | `A-YYYY-MM-DD-<company>-<role>` | `A-2026-01-15-acme-swe` |
+| JD analysis | `JD-YYYY-MM-DD-<company>-<role>` | `JD-2026-01-15-acme-swe` |
 
 ### Skill Namespace
 
@@ -104,13 +85,13 @@ Hook commands reference plugin files via `${CLAUDE_PLUGIN_ROOT}`:
 
 When writing examples inside `skills/**/SKILL.md` or `agents/*.md`, use **generic placeholders**, never real personal data:
 
-- `<Your Name>` not `Kalhar Pandya`
+- `<Your Name>` not a real person's name
 - `<your-email@example.com>` not real emails
-- `<City, Region>` not `Vancouver, BC`
-- `X-<employer-slug>-<role-slug>` not `X-kfin-senior-dev`
-- `raw_data/<your-resume>.tex` not the actual filename
+- `<City, Region>` not a real city
+- `X-<employer-slug>-<role-slug>` for experience IDs
+- `raw_data/<your-resume>.tex` for file paths
 
-If you find a real name leaking into plugin code, treat it as a bug.
+If you find real personal data leaking into plugin code, treat it as a bug.
 
 ---
 
@@ -120,8 +101,8 @@ If you find a real name leaking into plugin code, treat it as a bug.
 |---|---|---|---|
 | Skills | 13 | `skills/` | User-invocable commands |
 | Subagents | 5 | `agents/` | Specialized Claude personas |
-| Hooks | 4 | `hooks/hooks.json` | PostToolUse (3), SessionStart (1) |
-| Python scripts | 6 | `scripts/` | Validators, linters, dashboards |
+| Hooks | 4 | `hooks/hooks.json` | PostToolUse (3), SessionStart (1), UserPromptSubmit (1) |
+| Python scripts | 8 | `scripts/` | Validators, linters, status, routing guard |
 | JSON schemas | 8 | `schemas/` | Data structure contracts |
 | Templates | 6 | `templates/` | Starter files for new users |
 
@@ -132,7 +113,7 @@ If you find a real name leaking into plugin code, treat it as a bug.
 | `/careerops:setting-up` | One-time setup for a new user directory |
 | `/careerops:capturing-fact` | Interview to record a new career achievement |
 | `/careerops:capturing-evidence` | Attach evidence to an existing fact |
-| `/careerops:seeding-career-db` | Bootstrap from Master_Career_Document.md or LaTeX resume |
+| `/careerops:seeding-career-db` | Bootstrap from a resume or career document |
 | `/careerops:analyzing-jd` | Analyze a job description |
 | `/careerops:generating-resume` | End-to-end resume generation (includes planning Q&A) |
 | `/careerops:auditing-resume` | Re-run semantic auditor |
@@ -142,8 +123,6 @@ If you find a real name leaking into plugin code, treat it as a bug.
 | `/careerops:getting-help` | Full command reference |
 | `/careerops:using-careerops` | Bootstrap skill injected at SessionStart via hook |
 | `/careerops:rendercv` | External RenderCV skill |
-
-> Note: The DB health summary is no longer a standalone skill; it now runs automatically via the SessionStart hook (`session_start.py`). Pre-generation planning Q&A is absorbed into `/careerops:generating-resume`.
 
 ### The 5 Subagents
 
@@ -170,21 +149,7 @@ If you find a real name leaking into plugin code, treat it as a bug.
 
 ---
 
-## Execution
-
-The restructure plan is at `docs/superpowers/plans/2026-05-13-careerops-plugin-restructure.md`.
-
-To execute, use either:
-- **Subagent-driven** (`superpowers:subagent-driven-development`): fresh subagent per task with review between tasks (recommended for safety)
-- **Inline** (`superpowers:executing-plans`): batch execution in current session with checkpoints
-
-Until the migration is run, the actual plugin code (skills, agents, scripts) still lives at `P:\Resumes\Claude-automations\`. Read from there when investigating; write changes here.
-
----
-
 ## Git
 
-This directory is not yet a git repo. Once initialized:
-- Branch naming: `feat/kalhar-<feature>`
-- Commit prefix: `Kalhar: <message>`
-- Never add Co-Authored-By Claude references.
+- Branch naming: `feat/<feature-name>`
+- Never add Co-Authored-By Claude references in commits.

@@ -19,12 +19,15 @@ Result: a tailored, ATS-clean PDF resume with a claim ledger showing exactly whi
 ## Installation
 
 ```bash
-# 1. Add the CareerOps marketplace
-/plugin marketplace add KalharPandya/careerops
-
-# 2. Install the plugin
-/plugin install careerops@careerops
+npx careerops install
 ```
+
+This copies the plugin to `~/.claude/plugins/careerops/` and registers it in your Claude Code settings. Restart Claude Code afterward.
+
+**Requirements:**
+- Python 3.10+
+- `pip install pyyaml`
+- `pip install rendercv` (for PDF output)
 
 All CareerOps skills are then available under the `/careerops:` namespace.
 
@@ -45,7 +48,7 @@ claude
 /careerops:seeding-career-db raw_data/your-resume.tex
 ```
 
-See `docs/USER-SETUP.md` for the full bootstrap guide.
+Run `/careerops:getting-help full` inside Claude for the complete command reference.
 
 ## Commands
 

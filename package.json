@@ -1,0 +1,35 @@
+{
+  "name": "careerops",
+  "version": "2.0.0",
+  "description": "Schema-driven, fact-traceable resume and cover-letter automation for Claude Code",
+  "keywords": [
+    "claude-code",
+    "resume",
+    "career",
+    "claude",
+    "ai"
+  ],
+  "homepage": "https://github.com/KalharPandya/careerops",
+  "license": "MIT",
+  "author": "Kalhar Pandya",
+  "bin": {
+    "careerops": "bin/install.js"
+  },
+  "files": [
+    "bin/",
+    "skills/",
+    "scripts/",
+    "hooks/",
+    "schemas/",
+    "agents/",
+    "templates/",
+    "config/",
+    ".claude-plugin/"
+  ],
+  "scripts": {
+    "prepublishOnly": "node -e \"const fs=require('fs'),path=require('path'); const rm=(d)=>{if(fs.existsSync(d)){fs.readdirSync(d,{withFileTypes:true}).forEach(e=>{const p=path.join(d,e.name);if(e.isDirectory()){if(e.name==='__pycache__')fs.rmSync(p,{recursive:true,force:true});else rm(p);}});}}; rm('scripts');\""
+  },
+  "engines": {
+    "node": ">=16.7.0"
+  }
+}

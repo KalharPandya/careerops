@@ -32,6 +32,30 @@ Use the `Skill` tool every time.
 
 ---
 
+## CAREER DATA MAP
+
+The user's career knowledge base contains these directories. Claude must be aware of all of
+them and read from the correct location for any query:
+
+| Directory | Pattern | Contents |
+|---|---|---|
+| `career/experiences/` | `X-*.yaml` | Work experience envelopes with embedded `facts[]` arrays |
+| `career/projects/` | `P-*.yaml` | Standalone projects with embedded `facts[]` arrays |
+| `career/education/` | `edu.yaml` | Degrees, institutions, dates, GPA |
+| `career/skills/` | `skills.yaml` | Technical and soft skills inventory |
+| `career/contact/` | `contact.yaml` | Name, email, phone, location, links |
+| `career/evidence/` | `E-*.yaml` | Source evidence attached to facts |
+| `career/jd-analysis/` | `JD-*.yaml` | Parsed job description analyses |
+| `career/applications/` | `A-*/` | Per-application folders (generated resume, claim ledger, overrides) |
+| `career/config/` | `rules.yaml`, `rendercv-theme.yaml`, etc. | Plugin config, render theme, cover letter template |
+| `career/assets/` | misc | Logos, photos, static assets |
+
+When the user asks about any aspect of their career (projects, skills, education, contacts,
+experiences, facts, applications), glob the relevant directory. Never assume the answer is
+only in `career/experiences/`.
+
+---
+
 ## ROUTING RULES
 
 Follow these before responding to any user message:
@@ -51,8 +75,8 @@ shipped, or improved (even casually — "I just finished X" or "we reduced Y by 
   Call the Skill tool now.
 
 **Rule 3 — Empty database guard.**
-If the user has no `career/experiences/` directory, or the directory exists but all
-`X-*.yaml` files have empty `facts[]` arrays, or the directory contains no `X-*.yaml` files:
+If the user has no `career/experiences/` directory AND no `career/projects/` directory, or
+both exist but contain no YAML files with populated `facts[]` arrays:
   Surface this message exactly:
 
   "Your career knowledge base is empty. Run /careerops:setting-up to initialize your career
@@ -76,10 +100,25 @@ If the user asks for status, asks what they have, asks for a health check, or sa
 equivalent to "how does my career DB look" or "what facts do I have":
   Report from the `<careerops-status>` block that was injected into this session at startup.
   Do not run any script. Do not invoke a skill. The counts are already in your context.
-  If the user asks for a live recount, glob `career/experiences/X-*.yaml`, load each file,
-  and count the `facts[]` array entries directly.
+  If the user asks for a live recount, glob BOTH `career/experiences/X-*.yaml` AND
+  `career/projects/P-*.yaml`, load each file, and count the `facts[]` array entries.
+  Also report counts from `career/jd-analysis/JD-*.yaml` and `career/applications/A-*/`.
 
-**Rule 6 — 1% invocation rule.**
+**Rule 6 — Project queries.**
+If the user asks about their projects, side projects, personal projects, or top projects:
+  Glob `career/projects/P-*.yaml` and read each file.
+  Also check `career/experiences/X-*.yaml` for project work embedded in roles.
+  Summarize from both sources. Never answer project queries from experiences alone.
+
+**Rule 7 — Profile and skills queries.**
+If the user asks about their skills, tech stack, education, or contact info:
+  Read the relevant file directly:
+  - Skills: `career/skills/skills.yaml`
+  - Education: `career/education/edu.yaml`
+  - Contact: `career/contact/contact.yaml`
+  Do not fabricate or infer from memory. Read the file.
+
+**Rule 8 — 1% invocation rule.**
 If there is even a 1% chance any CareerOps skill applies to the user's message, call it via
 the `Skill` tool. Checking costs nothing. Skipping costs a missed capture or a missed pipeline
 trigger. When in doubt, call the skill. Let the skill decide whether it applies.
@@ -94,7 +133,7 @@ These rules apply to every response, every file write, every bullet in every ses
   in all output. Use commas, semicolons, parentheses, or restructured sentences instead.
   En-dash (–) is allowed only in date and number ranges.
 - NO FABRICATION: every resume bullet must trace to a verified fact ID in a
-  `career/experiences/X-*.yaml` file. No fact = no bullet.
+  `career/experiences/X-*.yaml` or `career/projects/P-*.yaml` file. No fact = no bullet.
 - IMMUTABLE FIELDS: never change the `when`, `employer`, or `role_title` fields in any
   fact or experience file, regardless of what the JD asks for.
 - TIER 2 OPT-IN: reframing beyond strict fact representation requires explicit opt-in
