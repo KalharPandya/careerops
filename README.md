@@ -1,111 +1,163 @@
 # CareerOps
 
-A Claude Code plugin for schema-driven, fact-traceable resume and cover-letter automation. Every bullet on every resume traces back to a verified atomic fact, and a multi-layer validation pipeline enforces correctness, decorum, and zero fabrication.
+**A Claude Code plugin that turns your career history into tailored, ATS-clean resumes — with zero fabrication.**
 
-## What It Does
+Every resume bullet traces to a verified fact you captured. A multi-layer pipeline handles relevance scoring, planning, writing, rendering, and validation. You stay in control at every step.
 
-1. You capture career facts once (`/careerops:capturing-fact`), stored inside experience files
-2. You drop a job description in `inbox/` and run `/careerops:analyzing-jd`
-3. You run `/careerops:generating-resume <jd-id>` and the system:
-   - Scores all your facts against the JD and ranks them by relevance
-   - Asks you to approve the presentation plan (which roles to expand, compress, merge)
-   - Composes bullets with full provenance (every bullet traces to a fact ID)
-   - Renders to PDF via RenderCV/Typst
-   - Runs an 8-gate validator (page budget, fabrication check, em-dash scan, etc.)
-   - Audits semantically for AI markers and quality
+---
 
-Result: a tailored, ATS-clean PDF resume with a claim ledger showing exactly which facts back which bullets.
+## How It Works
 
-## Installation
+1. **Capture** your career achievements once — CareerOps stores them as structured facts
+2. **Drop a job description** into your inbox folder
+3. **Run the resume pipeline** — it scores your facts against the JD, asks you to approve the plan, writes bullets with full provenance, renders a PDF, and validates the result
+
+---
+
+## Prerequisites
+
+- [Claude Code](https://claude.ai/code) installed and running
+- Python 3.10+
+- `pip install pyyaml rendercv`
+
+---
+
+## Install
 
 ```bash
 npx careerops install
 ```
 
-This copies the plugin to `~/.claude/plugins/careerops/` and registers it in your Claude Code settings. Restart Claude Code afterward.
+Then restart Claude Code. That's it — all commands are available under `/careerops:`.
 
-**Requirements:**
-- Python 3.10+
-- `pip install pyyaml`
-- `pip install rendercv` (for PDF output)
+To update later:
+```bash
+npx careerops update
+```
 
-All CareerOps skills are then available under the `/careerops:` namespace.
+To uninstall:
+```bash
+npx careerops uninstall
+```
 
-## Quick Start (New User)
+---
+
+## Getting Started
+
+**Step 1 — Create your career directory and open Claude inside it**
 
 ```bash
-# 1. Create an empty career data directory and cd into it
-mkdir -p ~/my-career
+mkdir ~/my-career
 cd ~/my-career
-
-# 2. Launch Claude
 claude
+```
 
-# 3. Inside Claude, run the first-time setup wizard
+**Step 2 — Run the setup wizard**
+
+```
 /careerops:setting-up
+```
 
-# 4. Drop an existing resume into raw_data/ and seed your knowledge base
+This scaffolds your directory structure and collects your profile (name, email, links).
+
+**Step 3 — Import your existing resume** *(optional but recommended)*
+
+Drop your current resume into `raw_data/`, then:
+
+```
 /careerops:seeding-career-db raw_data/your-resume.tex
 ```
 
-Run `/careerops:getting-help full` inside Claude for the complete command reference.
+Supports `.tex` and `.md` formats. CareerOps will extract structured facts from it.
 
-## Commands
+**Step 4 — Capture new achievements as they happen**
+
+```
+/careerops:capturing-fact
+```
+
+CareerOps interviews you and stores the result as a verified fact.
+
+**Step 5 — Apply to a job**
+
+Drop the job description into `inbox/`, then:
+
+```
+/careerops:analyzing-jd
+/careerops:generating-resume
+```
+
+The pipeline scores your facts against the JD, proposes a presentation plan for your approval, writes the bullets, renders the PDF, and validates it.
+
+---
+
+## All Commands
 
 ### Setup
-| Command | Purpose |
+| Command | What it does |
 |---|---|
-| `/careerops:setting-up` | First-run wizard: scaffold directories, collect profile, write config |
-| `/careerops:seeding-career-db <path>` | Import a resume (.tex or .md) into the career knowledge base |
+| `/careerops:setting-up` | First-run wizard — scaffolds directories, collects your profile |
+| `/careerops:seeding-career-db` | Import an existing resume into your knowledge base |
 
 ### Capture
-| Command | Purpose |
+| Command | What it does |
 |---|---|
-| `/careerops:capturing-fact` | Interview to record a new career achievement |
-| `/careerops:capturing-evidence <fact-id>` | Attach evidence to an existing fact |
+| `/careerops:capturing-fact` | Interview to record a new achievement |
+| `/careerops:capturing-evidence` | Attach a URL, PR, or document to an existing fact |
 
 ### Apply
-| Command | Purpose |
+| Command | What it does |
 |---|---|
-| `/careerops:analyzing-jd <path>` | Analyze a JD from `inbox/` — scores all facts by relevance |
-| `/careerops:generating-resume <jd-id>` | Full pipeline: plan approval, compose, render, validate, audit |
-| `/careerops:auditing-resume <app-id>` | Re-run the semantic auditor |
-| `/careerops:humanizing-resume <app-id>` | Manual AI-marker cleanup |
-| `/careerops:logging-outcome <app-id>` | Record interview/reject/offer/no-response |
+| `/careerops:analyzing-jd` | Parse a job description — scores all your facts by relevance |
+| `/careerops:generating-resume` | Full pipeline: plan, compose, render PDF, validate, audit |
+| `/careerops:auditing-resume` | Re-run the quality auditor on a generated resume |
+| `/careerops:humanizing-resume` | Clean up AI-marker patterns in bullets |
+| `/careerops:logging-outcome` | Record the result of an application |
 
 ### Health
-| Command | Purpose |
+| Command | What it does |
 |---|---|
-| `/careerops:linting-career` | Schema + reference + em-dash check on all career YAML |
-| `/careerops:getting-help` | Quick-start guide. Add `full` for complete command reference |
+| `/careerops:linting-career` | Schema, reference, and em-dash check across all your data |
+| `/careerops:getting-help` | Quick-start guide — add `full` for the complete reference |
 
-## Architecture
+---
 
-CareerOps separates **plugin** (this repo: how to do things) from **user data** (your directory: facts, applications, profile). The plugin is portable, publishable, and contains zero personal information. Your data stays where you choose to put it.
+## Your Data Layout
 
-**Data model:** Facts are embedded inside experience files (`career/experiences/X-*.yaml`) rather than stored as individual files. Every JD analysis scores all your facts by relevance, giving the composer a ranked shortlist while keeping all facts available for selection.
+After setup, your career directory looks like this:
 
-See:
-- `CLAUDE.md` for plugin development context, hard rules, conventions
-- `docs/USER-SETUP.md` for the new-user bootstrap guide
-- `docs/superpowers/specs/` for design history
+```
+~/my-career/
+├── career/
+│   ├── experiences/        # Your work history + facts
+│   ├── applications/       # One folder per job application
+│   ├── jd-analysis/        # Parsed job descriptions
+│   └── config/             # Theme, rules
+├── inbox/                  # Drop JDs here
+└── raw_data/               # Source resumes for seeding
+```
 
-## Hard Rules
+The plugin lives separately at `~/.claude/plugins/careerops/`. Your data never touches it.
 
-Every output from this plugin is validated against:
-1. **No em-dashes.** U+2014 and variants forbidden everywhere. Multi-layer enforcement.
-2. **No fabrication.** Every resume bullet traces to a verified fact ID.
-3. **Date and employer immutability.** Schema-locked fields.
-4. **Tier 2 reframing requires explicit per-application opt-in.**
-5. **Encapsulation requires user approval** before render.
+---
 
-## Tech Stack
+## Guarantees
+
+- **No fabrication.** Every bullet traces to a fact ID you captured. The validator enforces this.
+- **No em-dashes.** Enforced at every layer — scripts, hooks, and the semantic auditor all scan for them.
+- **Dates and employers are immutable.** The schema locks these fields regardless of what a JD asks for.
+- **You approve before render.** The pipeline presents a plan (which roles to expand, compress, or drop) and waits for your sign-off.
+
+---
+
+## Tech
 
 - **Renderer:** RenderCV (Typst)
-- **Data:** YAML files with JSON Schema validation; facts embedded in experience envelopes
-- **JD analysis:** Pure Claude subagent with relevance scoring (no ESCO/SkillNER)
-- **Validation:** Python validators (8 gates) + Claude semantic auditor
-- **Bootstrap:** `using-careerops` skill injected at every SessionStart via hook
+- **Data:** YAML files with JSON Schema validation
+- **JD analysis:** Claude subagent with relevance scoring
+- **Validation:** Python (8 gates) + Claude semantic auditor
+
+---
 
 ## License
 
