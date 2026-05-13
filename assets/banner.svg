@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" width="1200" height="280">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#3fb950"/>
+      <stop offset="100%" stop-color="#238636"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="280" rx="14" fill="url(#bg)"/>
+
+  <!-- Subtle border -->
+  <rect width="1200" height="280" rx="14" fill="none" stroke="#30363d" stroke-width="1.5"/>
+
+  <!-- Left green accent bar -->
+  <rect x="0" y="0" width="5" height="280" rx="3" fill="url(#accent)"/>
+
+  <!-- Faint grid dots — top right decorative cluster -->
+  <circle cx="1020" cy="44"  r="1.5" fill="#3fb950" opacity="0.25"/>
+  <circle cx="1054" cy="32"  r="2"   fill="#3fb950" opacity="0.18"/>
+  <circle cx="1088" cy="55"  r="1.5" fill="#3fb950" opacity="0.22"/>
+  <circle cx="1038" cy="70"  r="1"   fill="#3fb950" opacity="0.15"/>
+  <circle cx="1072" cy="25"  r="1.5" fill="#58a6ff" opacity="0.18"/>
+  <circle cx="1110" cy="42"  r="2"   fill="#58a6ff" opacity="0.14"/>
+  <circle cx="1130" cy="68"  r="1.5" fill="#3fb950" opacity="0.12"/>
+  <circle cx="1096" cy="80"  r="1"   fill="#58a6ff" opacity="0.20"/>
+  <circle cx="1148" cy="52"  r="2"   fill="#3fb950" opacity="0.10"/>
+  <circle cx="1060" cy="90"  r="1.5" fill="#58a6ff" opacity="0.12"/>
+
+  <!-- Terminal prompt symbol -->
+  <text x="44" y="126" font-family="'Courier New', Courier, monospace" font-size="38" font-weight="bold" fill="#3fb950">❯</text>
+
+  <!-- Main wordmark -->
+  <text x="92" y="130" font-family="'Courier New', Courier, monospace" font-size="80" font-weight="bold" fill="#e6edf3" letter-spacing="-1">CareerOps</text>
+
+  <!-- v2 badge -->
+  <rect x="92" y="148" width="52" height="22" rx="11" fill="#238636" opacity="0.35"/>
+  <text x="118" y="164" font-family="'Courier New', Courier, monospace" font-size="12" fill="#3fb950" text-anchor="middle" font-weight="bold">v2.0</text>
+
+  <!-- Tagline -->
+  <text x="92" y="202" font-family="'Courier New', Courier, monospace" font-size="19" fill="#8b949e">
+    Your career, recorded. Your resume, generated. Zero fabrication.
+  </text>
+
+  <!-- Three feature pills -->
+  <rect x="92"  y="222" width="148" height="26" rx="13" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="166" y="239" font-family="'Courier New', Courier, monospace" font-size="12" fill="#8b949e" text-anchor="middle">📋  fact capture</text>
+
+  <rect x="252" y="222" width="148" height="26" rx="13" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="326" y="239" font-family="'Courier New', Courier, monospace" font-size="12" fill="#8b949e" text-anchor="middle">🎯  JD scoring</text>
+
+  <rect x="412" y="222" width="168" height="26" rx="13" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="496" y="239" font-family="'Courier New', Courier, monospace" font-size="12" fill="#8b949e" text-anchor="middle">✅  zero fabrication</text>
+
+  <!-- Credit bottom right -->
+  <text x="1168" y="258" font-family="'Courier New', Courier, monospace" font-size="13" fill="#484f58" text-anchor="end">by Kalhar Pandya</text>
+</svg>

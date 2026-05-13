@@ -24,7 +24,8 @@
     "agents/",
     "templates/",
     "config/",
-    ".claude-plugin/"
+    ".claude-plugin/",
+    "assets/"
   ],
   "scripts": {
     "prepublishOnly": "node -e \"const fs=require('fs'),path=require('path'); const rm=(d)=>{if(fs.existsSync(d)){fs.readdirSync(d,{withFileTypes:true}).forEach(e=>{const p=path.join(d,e.name);if(e.isDirectory()){if(e.name==='__pycache__')fs.rmSync(p,{recursive:true,force:true});else rm(p);}});}}; rm('scripts');\""
