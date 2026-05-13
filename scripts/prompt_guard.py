@@ -87,11 +87,13 @@ def main():
 
     directive = DIRECTIVE_JD if intent == "jd" else DIRECTIVE_FACT
 
+    skill_name = "careerops:analyzing-jd" if intent == "jd" else "careerops:capturing-fact"
     output = {
+        "systemMessage": f"[CareerOps] Routing to {skill_name} — do not draft manually.",
         "hookSpecificOutput": {
             "hookEventName": "UserPromptSubmit",
             "additionalContext": directive,
-        }
+        },
     }
     sys.stdout.buffer.write(json.dumps(output, ensure_ascii=False).encode("utf-8"))
     sys.stdout.buffer.write(b"\n")
