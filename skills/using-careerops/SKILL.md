@@ -51,8 +51,10 @@ to generate or tailor a resume:
 **Rule 5 — Status and health queries.**
 If the user asks for status, asks what they have, asks for a health check, or says anything
 equivalent to "how does my career DB look" or "what facts do I have":
-  Run `career_status.py` using the Bash tool and display the output inline.
-  Do not invoke a skill. Just run the script and print the result.
+  Report from the `<careerops-status>` block that was injected into this session at startup.
+  Do not run any script. Do not invoke a skill. The counts are already in your context.
+  If the user asks for a live recount, glob `career/experiences/X-*.yaml`, load each file,
+  and count the `facts[]` array entries directly.
 
 **Rule 6 — 1% invocation rule.**
 If there is even a 1% chance any CareerOps skill applies to the user's message, invoke it.
