@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Restructure CareerOps from a mixed standalone project into a clean Claude Code plugin at `P:\CareerOps\` plus a user data directory at `P:\Resumes\Claude-automations\` (its current location, with plugin pieces stripped out). Zero user information lives inside the plugin; no plugin instructions live inside the user directory.
+**Goal:** Restructure CareerOps from a mixed standalone project into a clean Claude Code plugin at `~/careerops/` plus a user data directory at `~/my-career/` (its current location, with plugin pieces stripped out). Zero user information lives inside the plugin; no plugin instructions live inside the user directory.
 
-**Architecture:** Two completely separate top-level folders. The **plugin** (`P:\CareerOps\`) holds all behavior (skills, agents, hooks, scripts, schemas, conventions) and is its own publishable artifact. The **user directory** (`P:\Resumes\Claude-automations\`) holds only personal data (`career/`, `inbox/`, `raw_data/`, `Master_Career_Document.md`), user overrides (`career/config/`), and a personal CLAUDE.md with profile/preferences only. The plugin is installed via `claude --plugin-dir P:\CareerOps` from the user directory and skills are invoked with namespace `/careerops:<name>`. Python scripts read paths from `cwd` (the user directory) rather than hardcoded absolute paths.
+**Architecture:** Two completely separate top-level folders. The **plugin** (`~/careerops/`) holds all behavior (skills, agents, hooks, scripts, schemas, conventions) and is its own publishable artifact. The **user directory** (`~/my-career/`) holds only personal data (`career/`, `inbox/`, `raw_data/`, `Master_Career_Document.md`), user overrides (`career/config/`), and a personal CLAUDE.md with profile/preferences only. The plugin is installed via `claude --plugin-dir ~/careerops` from the user directory and skills are invoked with namespace `/careerops:<name>`. Python scripts read paths from `cwd` (the user directory) rather than hardcoded absolute paths.
 
 **Tech Stack:** Claude Code plugin system, Python 3 (validators), RenderCV/Typst (rendering), YAML (data), JSON Schema (validation).
 
@@ -12,10 +12,10 @@
 
 ## Target Directory Structure
 
-### Plugin (`P:\CareerOps\` — new, populated from current dir)
+### Plugin (`~/careerops/` — new, populated from current dir)
 
 ```
-P:\CareerOps\
+~/careerops/
 ├── .claude-plugin/
 │   └── plugin.json                 Plugin manifest
 ├── skills/                         15 skills, examples genericized
@@ -64,10 +64,10 @@ P:\CareerOps\
 └── README.md                       Plugin installation + usage
 ```
 
-### User Directory (`P:\Resumes\Claude-automations\` — current location, plugin pieces removed)
+### User Directory (`~/my-career/` — current location, plugin pieces removed)
 
 ```
-P:\Resumes\Claude-automations\
+~/my-career/
 ├── CLAUDE.md                       Kalhar's profile + writing prefs ONLY (no how-to)
 ├── career/                         All user data
 │   ├── facts/                      F-*.yaml (61 files)
@@ -122,8 +122,8 @@ Write `.claude-plugin/plugin.json`:
 
 - [ ] **Step 2: Verify**
 
-Run: `Test-Path .claude-plugin/plugin.json`
-Expected: `True`
+Run: `ls .claude-plugin/plugin.json`
+Expected: file listed (no error).
 
 ---
 
@@ -222,10 +222,10 @@ if not name:
 
 - [ ] **Step 7: Smoke-test the scripts from the project root**
 
-Run: `python scripts/career_status.py`
+Run: `python3 scripts/career_status.py`
 Expected: Same dashboard output as before, no hardcoded-path errors.
 
-Run: `python scripts/lint_yaml.py career/facts/F-2025-deloitte-1st-50agents.yaml`
+Run: `python3 scripts/lint_yaml.py career/facts/F-2025-deloitte-1st-50agents.yaml`
 Expected: passes (or expected warning) for a known-good file.
 
 ---
@@ -279,7 +279,7 @@ Line 52: change `'research' — Tanha lab, IEEE paper, Northeastern ML coursewor
 
 - [ ] **Step 7: Verify**
 
-Run: `Select-String -Path .claude/skills/**/SKILL.md -Pattern "Kalhar|pandyakalhar|Vancouver|Northeastern|Oracle|KalharPandya|kfin|VaultAI|FlytBase"`
+Run: `grep -rn "Kalhar\|pandyakalhar\|Vancouver\|Northeastern\|Oracle\|KalharPandya\|kfin\|VaultAI\|FlytBase" .claude/skills/`
 Expected: no matches (or only matches inside code blocks that document generic syntax).
 
 ---
@@ -301,7 +301,7 @@ Line 91: change `does this resume present Kalhar as a strong candidate` to `does
 
 - [ ] **Step 3: Verify**
 
-Run: `Select-String -Path .claude/agents/*.md -Pattern "Kalhar|pandyakalhar"`
+Run: `grep -n "Kalhar\|pandyakalhar" .claude/agents/*.md`
 Expected: no matches.
 
 ---
@@ -353,7 +353,7 @@ Strip the "Kalhar's Profile" and "Current Phase" sections. Keep all hard rules a
 
 - [ ] **Step 4: Verify**
 
-Run: `Select-String -Path CLAUDE.md -Pattern "Kalhar|pandyakalhar|Vancouver|Oracle"`
+Run: `grep -n "Kalhar\|pandyakalhar\|Vancouver\|Oracle" CLAUDE.md`
 Expected: no matches in CLAUDE.md.
 
 ---
@@ -391,7 +391,7 @@ Modify `.claude/skills/career-init/SKILL.md` so that when invoked on an empty us
 
 Confirm template files exist and are syntactically valid YAML.
 
-Run: `python -c "import yaml; yaml.safe_load(open('templates/contact.yaml.example'))"`
+Run: `python3 -c "import yaml; yaml.safe_load(open('templates/contact.yaml.example'))"`
 Expected: no exception.
 
 ---
@@ -451,17 +451,17 @@ Move `.claude/skills/` → `skills/` and `.claude/agents/` → `agents/` at plug
 
 - [ ] **Step 1: Move skills directory**
 
-Run: `Move-Item .claude/skills skills`
+Run: `mv .claude/skills skills`
 
 - [ ] **Step 2: Move agents directory**
 
-Run: `Move-Item .claude/agents agents`
+Run: `mv .claude/agents agents`
 
 - [ ] **Step 3: Update any internal references**
 
 Skills and agents may reference each other by path. Run:
 
-`Select-String -Path skills/**/SKILL.md,agents/*.md -Pattern "\.claude/"`
+`grep -rn '\.claude/' skills/ agents/`
 
 Update any `.claude/skills/...` → `skills/...` and `.claude/agents/...` → `agents/...`.
 
@@ -473,53 +473,53 @@ Plugin tree should now match the target layout in the header.
 
 ## Task 9: Migrate Plugin Pieces Out and Clean User Directory
 
-User data stays at `P:\Resumes\Claude-automations\`. We strip plugin pieces from it (they've already been built into `P:\CareerOps\` by earlier tasks). What remains in the user directory is pure user data.
+User data stays at `~/my-career/`. We strip plugin pieces from it (they've already been built into `~/careerops/` by earlier tasks). What remains in the user directory is pure user data.
 
-**Files moved or removed from `P:\Resumes\Claude-automations\`:**
-- `.claude/skills/` → already lifted into `P:\CareerOps\skills\` (Task 8); delete original
-- `.claude/agents/` → already lifted into `P:\CareerOps\agents\` (Task 8); delete original
-- `.claude/settings.json` → replaced by `P:\CareerOps\hooks\hooks.json` (Task 7); delete original
-- `scripts/` → already lifted into `P:\CareerOps\scripts\` (Task 2); delete original
-- `schemas/` → already lifted into `P:\CareerOps\schemas\` (Task 1 area); delete original
-- `docs/` → already lifted into `P:\CareerOps\docs\`; delete original
+**Files moved or removed from `~/my-career/`:**
+- `.claude/skills/` → already lifted into `~/careerops/skills/` (Task 8); delete original
+- `.claude/agents/` → already lifted into `~/careerops/agents/` (Task 8); delete original
+- `.claude/settings.json` → replaced by `~/careerops/hooks/hooks.json` (Task 7); delete original
+- `scripts/` → already lifted into `~/careerops/scripts/` (Task 2); delete original
+- `schemas/` → already lifted into `~/careerops/schemas/` (Task 1 area); delete original
+- `docs/` → already lifted into `~/careerops/docs/`; delete original
 - `README.md` → replaced by user-facing one (Task 11); delete or rewrite
-- `research-output.md` → orphan research notes; move to `P:\CareerOps\docs\research-notes.md`
-- `skills-lock.json` → plugin concern; move to `P:\CareerOps\skills-lock.json`
+- `research-output.md` → orphan research notes; move to `~/careerops/docs/research-notes.md`
+- `skills-lock.json` → plugin concern; move to `~/careerops/skills-lock.json`
 
-**Files that stay in `P:\Resumes\Claude-automations\`:**
+**Files that stay in `~/my-career/`:**
 - `career/`
 - `inbox/`
 - `raw_data/`
 - `Master_Career_Document.md`
 - `CLAUDE.md` (now user-only, after Task 5 split)
 
-- [ ] **Step 1: Sanity-check that all plugin pieces are present in `P:\CareerOps\`**
+- [ ] **Step 1: Sanity-check that all plugin pieces are present in `~/careerops/`**
 
-Run: `Get-ChildItem P:\CareerOps`
+Run: `ls ~/careerops`
 Expected: `.claude-plugin/`, `skills/`, `agents/`, `hooks/`, `scripts/`, `schemas/`, `config/`, `templates/`, `docs/`, `CLAUDE.md`, `README.md`.
 
 - [ ] **Step 2: Delete plugin pieces from user directory**
 
-```powershell
-Remove-Item -Recurse -Force "P:\Resumes\Claude-automations\.claude"
-Remove-Item -Recurse -Force "P:\Resumes\Claude-automations\scripts"
-Remove-Item -Recurse -Force "P:\Resumes\Claude-automations\schemas"
-Remove-Item -Recurse -Force "P:\Resumes\Claude-automations\docs"
-Remove-Item -Force "P:\Resumes\Claude-automations\skills-lock.json"
-Remove-Item -Force "P:\Resumes\Claude-automations\research-output.md"
-Remove-Item -Force "P:\Resumes\Claude-automations\README.md"
+```bash
+rm -rf ~/my-career/.claude
+rm -rf ~/my-career/scripts
+rm -rf ~/my-career/schemas
+rm -rf ~/my-career/docs
+rm -f ~/my-career/skills-lock.json
+rm -f ~/my-career/research-output.md
+rm -f ~/my-career/README.md
 ```
 
 - [ ] **Step 3: Replace CLAUDE.md with the user-only version**
 
-After Task 5 split, replace `P:\Resumes\Claude-automations\CLAUDE.md` with the user-only version filled in for Kalhar (name, email, location, target roles, experience list, education, highlights pulled from `career/contact/contact.yaml` and `career/education/edu.yaml`).
+After Task 5 split, replace `~/my-career/CLAUDE.md` with the user-only version filled in (name, email, location, target roles, experience list, education, highlights pulled from `career/contact/contact.yaml` and `career/education/edu.yaml`).
 
 - [ ] **Step 4: Verify both directories**
 
-Run: `Get-ChildItem P:\Resumes\Claude-automations`
+Run: `ls ~/my-career`
 Expected: only `career/`, `inbox/`, `raw_data/`, `CLAUDE.md`, `Master_Career_Document.md`. Nothing else.
 
-Run: `Get-ChildItem P:\CareerOps`
+Run: `ls ~/careerops`
 Expected: only plugin files. No `career/`, no `inbox/`, no `raw_data/`, no `Master_Career_Document.md`.
 
 ---
@@ -528,9 +528,9 @@ Expected: only plugin files. No `career/`, no `inbox/`, no `raw_data/`, no `Mast
 
 - [ ] **Step 1: Start Claude from user directory with plugin loaded**
 
-```powershell
-cd P:\Resumes\Claude-automations
-claude --plugin-dir P:\CareerOps
+```bash
+cd ~/my-career
+claude --plugin-dir ~/careerops
 ```
 
 - [ ] **Step 2: Verify SessionStart hook fires**
@@ -604,7 +604,7 @@ README is readable end-to-end; no references to Kalhar; no references to `P:/Res
 **Known risks:**
 - RenderCV's output filename (`<Name>_CV.pdf`) depends on `cv.name` field — the skill instructions need to be robust to any name, not just Kalhar's.
 - The `templates/` approach requires `/career-init` to be re-implemented (currently it may assume seed-from-tex flow). Verify or expand Task 6 if needed.
-- The user directory keeps its current path (`P:\Resumes\Claude-automations\`), so the existing auto-memory at `~/.claude/projects/P--Resumes-Claude-automations/memory/` stays valid and continues to load. No memory migration needed.
-- Plugin pieces are first copied into `P:\CareerOps\`, then deleted from the user directory (Task 9 Step 2). Do not run Step 2 until verification in Task 10 passes — keeping the originals intact lets you roll back if anything fails.
+- The user directory keeps its current path; the existing auto-memory under `~/.claude/projects/` stays valid and continues to load. No memory migration needed.
+- Plugin pieces are first copied into `~/careerops/`, then deleted from the user directory (Task 9 Step 2). Do not run Step 2 until verification in Task 10 passes -- keeping the originals intact lets you roll back if anything fails.
 
 ---

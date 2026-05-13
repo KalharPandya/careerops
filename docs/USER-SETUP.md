@@ -5,108 +5,93 @@ This guide walks a new user through setting up their own career data directory w
 ## Prerequisites
 
 - Claude Code CLI installed
-- CareerOps plugin at a local path (e.g., `P:\CareerOps`) or installed via marketplace
 - Python 3.9+ on PATH
 - RenderCV installed: `pip install rendercv`
 
-## Step 1: Create Your Data Directory
+## Step 1: Install the Plugin
 
-```powershell
-New-Item -ItemType Directory -Path "C:\path\to\my-career"
-cd "C:\path\to\my-career"
-```
-
-This directory will hold all your career data. It is separate from the plugin and contains only your personal information.
-
-## Step 2: Start Claude with the Plugin
-
-```powershell
-claude --plugin-dir P:\CareerOps
-```
-
-All CareerOps skills are now available under the `/careerops:` namespace.
-
-## Step 3: Initialize the Data Directory
+Inside any Claude Code session:
 
 ```
-/careerops:career-init
+/plugin marketplace add KalharPandya/careerops
+/plugin install careerops@careerops
 ```
 
-This copies starter templates from the plugin into your data directory, creating:
+The plugin is now available in every future session automatically.
 
-```
-my-career/
-├── CLAUDE.md                      Your profile and preferences (fill this in)
-├── career/
-│   ├── contact/contact.yaml       Your contact info
-│   ├── education/edu.yaml         Your degrees
-│   ├── skills/skills.yaml         Your skills by category
-│   ├── facts/                     Will hold F-*.yaml atomic facts
-│   ├── experiences/               Will hold X-*.yaml role envelopes
-│   ├── projects/                  Will hold P-*.yaml project entries
-│   ├── evidence/                  Will hold E-*.yaml evidence sources
-│   ├── applications/              One folder per sent resume
-│   ├── jd-analysis/               Analyzed job descriptions
-│   └── config/
-│       ├── rules.yaml             Validation rules (inherits plugin defaults)
-│       └── rendercv-theme.yaml    Your theme choice
-├── inbox/                         Drop raw JDs here
-└── raw_data/                      Drop source resumes here
+## Step 2: Create Your Career Data Directory
+
+```bash
+mkdir -p ~/my-career
+cd ~/my-career
 ```
 
-## Step 4: Fill In Your Profile
+This directory holds all your personal career data. It is completely separate from the plugin.
 
-Edit the generated files with your real information:
+## Step 3: Launch Claude and Run Setup
 
-**`CLAUDE.md`** — Your name, email, target roles, experience summary, writing preferences. This is what Claude reads every session to know who you are.
-
-**`career/contact/contact.yaml`** — Name, email, phone, location, website, LinkedIn, GitHub.
-
-**`career/education/edu.yaml`** — Your degrees, institutions, GPAs, dates.
-
-**`career/skills/skills.yaml`** — Your skills organized by category (languages, frameworks, tools, etc.).
-
-## Step 5: Seed Your Career Knowledge Base
-
-If you have an existing LaTeX resume:
-
-```
-/careerops:seed-from-tex raw_data/your-resume.tex
+```bash
+claude
 ```
 
-If you have a Markdown career document:
+Then inside Claude:
 
 ```
-/careerops:seed-from-master Master_Career_Document.md
+/careerops:setting-up
 ```
 
-Both commands populate `career/facts/` and `career/experiences/` from your existing material.
+This runs the first-time wizard which:
+1. Detects you are a new user (no existing data)
+2. Scaffolds the full directory structure:
+   ```
+   career/experiences/    career/projects/       career/evidence/
+   career/applications/   career/jd-analysis/    career/contact/
+   career/education/      career/skills/         career/config/
+   inbox/                 raw_data/
+   ```
+3. Copies starter templates from the plugin
+4. Asks 8 questions (name, email, location, LinkedIn, GitHub, website, theme, page budget)
+5. Writes your config files and tells you what to do next
 
-## Step 6: Apply for a Job
+## Step 4: Seed Your Knowledge Base
+
+Drop an existing resume into `raw_data/` then run:
+
+```
+/careerops:seeding-career-db raw_data/your-resume.tex
+```
+
+Or for a Markdown career document:
+
+```
+/careerops:seeding-career-db Master_Career_Document.md
+```
+
+This populates `career/experiences/` with your roles and embedded facts from your existing resume.
+
+## Step 5: Apply for a Job
 
 1. Drop the job description into `inbox/` as a `.md` or `.txt` file
-2. Run `/careerops:ingest-jd inbox/company-role.md`
-3. Run `/careerops:generate-resume JD-YYYY-MM-DD-company-role`
-4. Review the proposed presentation plan and approve
+2. Run `/careerops:analyzing-jd inbox/company-role.md`
+3. Run `/careerops:generating-resume JD-YYYY-MM-DD-company-role`
+4. Review and approve the proposed presentation plan
 5. The system renders, validates, and audits your resume
 6. Find the output at `career/applications/A-YYYY-MM-DD-company-role/resume.pdf`
 
 ## Ongoing Usage
 
 ```
-/careerops:capture-fact        Add a new career achievement any time
-/careerops:career-status       Check DB health (fact count, applications)
-/careerops:lint-career         Validate all career YAML files
-/careerops:log-outcome <id>    Record interview/offer/reject
+/careerops:capturing-fact       Add a new career achievement any time
+/careerops:linting-career       Validate all career YAML files
+/careerops:logging-outcome      Record interview/offer/reject outcome
+/careerops:getting-help         Quick-start guide (add "full" for complete reference)
 ```
 
 ## Validation Rules
 
-The plugin enforces several rules on every file write:
+The plugin enforces several rules automatically on every file write:
 
 - **No em-dashes** (U+2014 and variants) — use commas, semicolons, or parentheses instead
 - **No fabrication** — every resume bullet must trace to a fact ID
 - **Dates and employers are immutable** in facts
 - **Page budget** — resumes default to max 2 pages
-
-These are enforced automatically via hooks whenever you edit YAML or resume files.

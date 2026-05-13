@@ -4,13 +4,12 @@ A Claude Code plugin for schema-driven, fact-traceable resume and cover-letter a
 
 ## What It Does
 
-1. You capture career facts once (`/careerops:capture-fact`), stored as atomic YAML files
-2. You drop a job description in `inbox/` and run `/careerops:ingest-jd`
-3. You run `/careerops:generate-resume <jd-id>` and the system:
-   - Maps your facts to JD keywords
-   - Proposes a presentation plan (which roles to expand, compress, merge)
-   - Asks for your approval
-   - Composes bullets with full provenance (every bullet → fact ID)
+1. You capture career facts once (`/careerops:capturing-fact`), stored inside experience files
+2. You drop a job description in `inbox/` and run `/careerops:analyzing-jd`
+3. You run `/careerops:generating-resume <jd-id>` and the system:
+   - Scores all your facts against the JD and ranks them by relevance
+   - Asks you to approve the presentation plan (which roles to expand, compress, merge)
+   - Composes bullets with full provenance (every bullet traces to a fact ID)
    - Renders to PDF via RenderCV/Typst
    - Runs an 8-gate validator (page budget, fabrication check, em-dash scan, etc.)
    - Audits semantically for AI markers and quality
@@ -19,87 +18,91 @@ Result: a tailored, ATS-clean PDF resume with a claim ledger showing exactly whi
 
 ## Installation
 
-```powershell
-# From your career-data directory
-claude --plugin-dir P:\CareerOps
+```bash
+# 1. Add the CareerOps marketplace
+/plugin marketplace add KalharPandya/careerops
+
+# 2. Install the plugin
+/plugin install careerops@careerops
 ```
 
-Once installed, all 15 skills are available under the `/careerops:` namespace.
+All CareerOps skills are then available under the `/careerops:` namespace.
 
 ## Quick Start (New User)
 
-```powershell
-# 1. Create an empty data directory and cd into it
-New-Item -ItemType Directory -Path "C:\path\to\my-career"
-cd "C:\path\to\my-career"
+```bash
+# 1. Create an empty career data directory and cd into it
+mkdir -p ~/my-career
+cd ~/my-career
 
-# 2. Launch Claude with the plugin
-claude --plugin-dir P:\CareerOps
+# 2. Launch Claude
+claude
 
-# 3. Inside Claude, initialize the data directory
-/careerops:career-init
+# 3. Inside Claude, run the first-time setup wizard
+/careerops:setting-up
 
-# 4. Fill in career/contact/contact.yaml, career/education/edu.yaml, CLAUDE.md
-#    Then seed from an existing resume:
-/careerops:seed-from-tex raw_data/your-resume.tex
-# or
-/careerops:seed-from-master Master_Career_Document.md
+# 4. Drop an existing resume into raw_data/ and seed your knowledge base
+/careerops:seeding-career-db raw_data/your-resume.tex
 ```
 
 See `docs/USER-SETUP.md` for the full bootstrap guide.
 
 ## Commands
 
-### Capture & Curate
+### Setup
 | Command | Purpose |
 |---|---|
-| `/careerops:capture-fact` | Interview to record a new career achievement |
-| `/careerops:capture-evidence <fact-id>` | Attach evidence to an existing fact |
-| `/careerops:seed-from-master` | Bootstrap the DB from `Master_Career_Document.md` |
-| `/careerops:seed-from-tex <path>` | Bootstrap the DB from a LaTeX resume |
+| `/careerops:setting-up` | First-run wizard: scaffold directories, collect profile, write config |
+| `/careerops:seeding-career-db <path>` | Import a resume (.tex or .md) into the career knowledge base |
+
+### Capture
+| Command | Purpose |
+|---|---|
+| `/careerops:capturing-fact` | Interview to record a new career achievement |
+| `/careerops:capturing-evidence <fact-id>` | Attach evidence to an existing fact |
 
 ### Apply
 | Command | Purpose |
 |---|---|
-| `/careerops:ingest-jd <path>` | Analyze a JD from `inbox/` into structured YAML |
-| `/careerops:plan-resume <jd-id>` | Pre-generation Q&A for tone and emphasis |
-| `/careerops:generate-resume <jd-id>` | Full pipeline: plan → compose → render → validate → audit |
-| `/careerops:audit-resume <app-id>` | Re-run the semantic auditor |
-| `/careerops:humanize-resume <app-id>` | Manual AI-marker cleanup |
-| `/careerops:log-outcome <app-id>` | Record interview/reject/offer/no-response |
+| `/careerops:analyzing-jd <path>` | Analyze a JD from `inbox/` — scores all facts by relevance |
+| `/careerops:generating-resume <jd-id>` | Full pipeline: plan approval, compose, render, validate, audit |
+| `/careerops:auditing-resume <app-id>` | Re-run the semantic auditor |
+| `/careerops:humanizing-resume <app-id>` | Manual AI-marker cleanup |
+| `/careerops:logging-outcome <app-id>` | Record interview/reject/offer/no-response |
 
 ### Health
 | Command | Purpose |
 |---|---|
-| `/careerops:career-status` | DB health summary (facts, applications, JDs ingested) |
-| `/careerops:lint-career` | Schema + reference + em-dash check on all career YAML |
-| `/careerops:career-help` | Full command reference |
+| `/careerops:linting-career` | Schema + reference + em-dash check on all career YAML |
+| `/careerops:getting-help` | Quick-start guide. Add `full` for complete command reference |
 
 ## Architecture
 
-CareerOps separates **plugin** (this directory: how to do things) from **user data** (your directory: facts, applications, profile). The plugin is portable, publishable, and contains zero personal information. Your data stays where you choose to put it.
+CareerOps separates **plugin** (this repo: how to do things) from **user data** (your directory: facts, applications, profile). The plugin is portable, publishable, and contains zero personal information. Your data stays where you choose to put it.
+
+**Data model:** Facts are embedded inside experience files (`career/experiences/X-*.yaml`) rather than stored as individual files. Every JD analysis scores all your facts by relevance, giving the composer a ranked shortlist while keeping all facts available for selection.
 
 See:
 - `CLAUDE.md` for plugin development context, hard rules, conventions
+- `docs/USER-SETUP.md` for the new-user bootstrap guide
 - `docs/superpowers/specs/` for design history
-- `docs/superpowers/plans/` for active implementation plans
 
 ## Hard Rules
 
 Every output from this plugin is validated against:
-1. **No em-dashes.** U+2014 forbidden everywhere. Multi-layer enforcement.
-2. **No fabrication.** Every claim traces to a fact ID.
-3. **Date and employer immutability.** Schema-locked.
+1. **No em-dashes.** U+2014 and variants forbidden everywhere. Multi-layer enforcement.
+2. **No fabrication.** Every resume bullet traces to a verified fact ID.
+3. **Date and employer immutability.** Schema-locked fields.
 4. **Tier 2 reframing requires explicit per-application opt-in.**
 5. **Encapsulation requires user approval** before render.
 
 ## Tech Stack
 
 - **Renderer:** RenderCV (Typst)
-- **Data:** Flat YAML files, validated against JSON Schema
-- **JD analysis:** Pure Claude subagent (no ESCO/SkillNER)
+- **Data:** YAML files with JSON Schema validation; facts embedded in experience envelopes
+- **JD analysis:** Pure Claude subagent with relevance scoring (no ESCO/SkillNER)
 - **Validation:** Python validators (8 gates) + Claude semantic auditor
-- **Capture:** Interactive subagent (`fact-curator`)
+- **Bootstrap:** `using-careerops` skill injected at every SessionStart via hook
 
 ## License
 
