@@ -44,7 +44,7 @@ careerops/                          ← THIS DIRECTORY (plugin only)
 - If it is **personal information** or **user-supplied data** → user directory
 - If it is **user-specific configuration** (theme choice, rule override, profile) → user directory
 
-A new user installs this plugin via `npx careerops install`, then runs `/careerops:setting-up` from their own data directory to populate it from `templates/`.
+A new user installs this plugin via `npx @kalhar/careerops install`, then runs `/careerops:setting-up` from their own data directory to populate it from `templates/`.
 
 The `using-careerops` skill is injected at every SessionStart via hook and serves as the bootstrap skill, orienting Claude to the plugin structure and user data directory at the start of each session.
 
