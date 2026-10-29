@@ -13,8 +13,8 @@
 
 **Your career, recorded. Your resume, generated. Zero fabrication.**
 
-[![npm version](https://img.shields.io/npm/v/careerops)](https://www.npmjs.com/package/careerops)
-[![license](https://img.shields.io/npm/l/careerops)](LICENSE)
+[![npm version](https://img.shields.io/npm/v/@kalhar/careerops)](https://www.npmjs.com/package/@kalhar/careerops)
+[![license](https://img.shields.io/npm/l/@kalhar/careerops)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-blue)](https://claude.ai/code)
 
 CareerOps is a Claude Code plugin — a personal career knowledge base that turns your real history into tailored, ATS-ready resumes on demand, without fabricating a single word. **Capture achievements as they happen. Generate targeted resumes in minutes. Own your data forever.**
@@ -113,14 +113,14 @@ Import your old resume and seed your database from it. Then start capturing forw
 ## Install
 
 ```bash
-npx careerops install
+npx @kalhar/careerops install
 ```
 
 Restart Claude Code. Done — all commands are live under `/careerops:`.
 
 ```bash
-npx careerops update     # pull the latest version
-npx careerops uninstall  # remove cleanly
+npx @kalhar/careerops update     # pull the latest version
+npx @kalhar/careerops uninstall  # remove cleanly
 ```
 
 ---

@@ -107,7 +107,7 @@ function update() {
 }
 
 function help() {
-  console.log('Usage: npx careerops [command]\n');
+  console.log('Usage: npx @kalhar/careerops [command]\n');
   console.log('Commands:');
   console.log('  install    Install the CareerOps Claude Code plugin (default)');
   console.log('  update     Overwrite installed files with this version');
